@@ -516,6 +516,15 @@ void CInfClassCharacter::FireWeapon()
 	if(!WillFire || GetPlayer()->MapMenu() > 0)
 		return;
 
+	if(Config()->m_InfTaxi < 2)
+	{
+		if(m_Core.m_IsPassenger)
+		{
+			NoAmmo();
+			return;
+		}
+	}
+
 	if(IsFrozen())
 	{
 		// Timer stuff to avoid shrieking orchestra caused by unfreeze-plasma
