@@ -2382,15 +2382,17 @@ int CServer::Run()
 
 	// start game
 	{
-		int64 ReportTime = time_get();
-		int ReportInterval = 3;
+		bool NonActive = false;
 
 		m_Lastheartbeat = 0;
 		m_GameStartTime = time_get();
 
 		while(m_RunServer)
 		{
+			if(NonActive)
+				PumpNetwork();
 			set_new_tick();
+
 			int64 t = time_get();
 			int NewTicks = 0;
 			
@@ -2533,34 +2535,10 @@ int CServer::Run()
 			// master server stuff
 			m_Register.RegisterUpdate(m_NetServer.NetType());
 
-			PumpNetwork();
+			if(!NonActive)
+				PumpNetwork();
 
-			if(ReportTime < time_get())
-			{
-				if(g_Config.m_Debug)
-				{
-					/*
-					static NETSTATS prev_stats;
-					NETSTATS stats;
-					netserver_stats(net, &stats);
-
-					perf_next();
-
-					if(config.dbg_pref)
-						perf_dump(&rootscope);
-
-					dbg_msg("server", "send=%8d recv=%8d",
-						(stats.send_bytes - prev_stats.send_bytes)/reportinterval,
-						(stats.recv_bytes - prev_stats.recv_bytes)/reportinterval);
-
-					prev_stats = stats;
-					*/
-				}
-
-				ReportTime += time_freq()*ReportInterval;
-			}
-
-			bool NonActive = true;
+			NonActive = true;
 
 			for(int c = 0; c < MAX_CLIENTS; c++)
 				if(m_aClients[c].m_State != CClient::STATE_EMPTY)
@@ -2578,7 +2556,7 @@ int CServer::Run()
 			{
 				set_new_tick();
 				int64 t = time_get();
-				int x = TickStartTime(m_CurrentGameTick+1) - t + 1;
+				int x = (TickStartTime(m_CurrentGameTick + 1) - t) * 1000000 / time_freq() + 1;
 				if(x > 0)
 					net_socket_read_wait(m_NetServer.Socket(), x);
 			}
@@ -3197,6 +3175,7 @@ static CServer *CreateServer() { return new CServer(); }
 
 int main(int argc, const char **argv) // ignore_convention
 {
+	bool Silent = false;
 #if defined(CONF_FAMILY_WINDOWS)
 	for(int i = 1; i < argc; i++) // ignore_convention
 	{
@@ -3218,7 +3197,7 @@ int main(int argc, const char **argv) // ignore_convention
 	IKernel *pKernel = IKernel::Create();
 
 	// create the components
-	IEngine *pEngine = CreateEngine("Teeworlds");
+	IEngine *pEngine = CreateEngine("Teeworlds", Silent, 2);
 	IEngineMap *pEngineMap = CreateEngineMap();
 	IGameServer *pGameServer = CreateGameServer();
 	IConsole *pConsole = CreateConsole(CFGFLAG_SERVER|CFGFLAG_ECON);
