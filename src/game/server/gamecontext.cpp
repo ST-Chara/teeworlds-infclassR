@@ -3065,6 +3065,11 @@ bool CGameContext::PrivateMessage(const char* pStr, int ClientID, bool TeamChat)
 				CheckClass = PLAYERCLASS_LOOPER;
 				str_copy(aChatTitle, "looper", sizeof(aChatTitle));
 			}
+			else if(str_comp(aNameFound, "!valentine") == 0 && m_apPlayers[ClientID] && m_apPlayers[ClientID]->GetCharacter())
+			{
+				CheckClass = PLAYERCLASS_VALENTINE;
+				str_copy(aChatTitle, "valentine", sizeof(aChatTitle));
+			}
 			else if(str_comp(aNameFound, "!medic") == 0 && m_apPlayers[ClientID] && m_apPlayers[ClientID]->GetCharacter())
 			{
 				CheckClass = PLAYERCLASS_MEDIC;

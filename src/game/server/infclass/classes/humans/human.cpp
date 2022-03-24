@@ -70,6 +70,12 @@ bool CInfClassHuman::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pOutp
 		pOutput->ColorBody = 255;
 		pOutput->ColorFeet = 0;
 		break;
+	case PLAYERCLASS_VALENTINE:
+		pOutput->pSkinName = "Colory BLACK";
+		pOutput->UseCustomColor = 1;
+		pOutput->ColorBody = 255;
+		pOutput->ColorFeet = 0;
+		break;
 	case PLAYERCLASS_MEDIC:
 		pOutput->pSkinName = "twinbop";
 		pOutput->UseCustomColor = 0;
@@ -370,6 +376,13 @@ void CInfClassHuman::GiveClassAttributes()
 			break;
 		case PLAYERCLASS_LOOPER:
 			m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
+			m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
+			m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
+			m_pCharacter->SetActiveWeapon(WEAPON_LASER);
+			break;
+		case PLAYERCLASS_VALENTINE:
+			m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
+			m_pCharacter->GiveWeapon(WEAPON_SHOTGUN, -1);
 			m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
 			m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
 			m_pCharacter->SetActiveWeapon(WEAPON_LASER);

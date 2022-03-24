@@ -212,6 +212,9 @@ public:
 	using CCharacter::GameWorld;
 	using CCharacter::Server;
 
+	void TeleportPlayer(vec2 Pos);
+	void GenerateFPos(int ClientID);
+
 	CGameWorld *GameWorld() const;
 	const IServer *Server() const;
 protected:
@@ -245,6 +248,8 @@ protected:
 	array_on_stack<CDamagePoint, 4> m_TakenDamageDetails;
 	bool m_NeedFullHeal = false;
 	bool m_PositionLocked = false;
+
+	vec2 m_D4CToPos;
 };
 
 inline const CInfClassCharacter *CInfClassCharacter::GetInstance(const CCharacter *pCharacter)

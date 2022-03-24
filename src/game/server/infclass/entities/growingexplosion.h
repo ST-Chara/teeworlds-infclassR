@@ -20,6 +20,8 @@ enum class GROWING_EXPLOSION_EFFECT
 	LOVE_INFECTED,
 	BOOM_INFECTED,
 	HEAL_HUMANS,
+	D4C_TP,
+	D4C_TP_SELF,
 };
 
 class CGrowingExplosion : public CInfCEntity

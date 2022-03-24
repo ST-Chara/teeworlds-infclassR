@@ -14,6 +14,7 @@ public:
 	static const char *GetEventMapName(const char *pMapName);
 
 	static bool IsWinter();
+	static bool IsJOJO();
 };
 
 #endif // GAME_SERVER_INFCLASS_EVENTS_DIRECTOR_H

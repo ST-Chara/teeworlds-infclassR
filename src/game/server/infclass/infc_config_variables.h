@@ -95,6 +95,7 @@ MACRO_CONFIG_INT(InfEnableSniper, inf_enable_sniper, 1, 0, 1, CFGFLAG_SERVER, "M
 MACRO_CONFIG_INT(InfEnableNinja, inf_enable_ninja, 1, 0, 1, CFGFLAG_SERVER, "Makes the ninja class available")
 MACRO_CONFIG_INT(InfEnableMedic, inf_enable_medic, 1, 0, 1, CFGFLAG_SERVER, "Makes the medic class available")
 MACRO_CONFIG_INT(InfEnableHero, inf_enable_hero, 1, 0, 1, CFGFLAG_SERVER, "Makes the hero class available")
+MACRO_CONFIG_INT(InfEnableValentine, inf_enable_valentine, 1, 0, 1, CFGFLAG_SERVER, "Makes the valentine class available")
 
 MACRO_CONFIG_INT(InfMinPlayersForEngineer, inf_min_players_for_engineer, 0, 0, 100, CFGFLAG_SERVER, "Minimum number of players that are needed to enable Engineer class")
 MACRO_CONFIG_INT(InfProbaSpawnNearWitch, inf_proba_spawn_near_witch, 66, 0, 100, CFGFLAG_SERVER, "Probability for an infected to spawn near a witch")

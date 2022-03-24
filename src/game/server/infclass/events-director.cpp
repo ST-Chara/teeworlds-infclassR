@@ -8,11 +8,13 @@
 #include <vector>
 
 static const char WinterSuffix[] = "_winter";
+static const char JOJOSuffix[] = "_jojo";
 
 enum class EventType
 {
 	None,
 	Winter,
+	JoJo,
 };
 
 static EventType PreloadedMapEventType = EventType::None;
@@ -25,6 +27,14 @@ const char *EventsDirector::GetMapConverterId(const char *pConverterId)
 		if(CustomId[0] == 0)
 		{
 			str_format(&CustomId[0], sizeof(CustomId), "%s%s", pConverterId, WinterSuffix);
+		}
+		return CustomId;
+	}
+	else if(PreloadedMapEventType == EventType::JoJo)
+	{
+		if(CustomId[0] == 0)
+		{
+			str_format(&CustomId[0], sizeof(CustomId), "%s%s", pConverterId, JOJOSuffix);
 		}
 		return CustomId;
 	}
@@ -43,6 +53,14 @@ void EventsDirector::SetPreloadedMapName(const char *pName)
 		if(str_comp(&pName[ExpectedSuffixOffset], WinterSuffix) == 0)
 		{
 			PreloadedMapEventType = EventType::Winter;
+		}
+	}
+	else if(NameLength > sizeof(JOJOSuffix))
+	{
+		int ExpectedSuffixOffset = NameLength - sizeof(JOJOSuffix) + 1;
+		if(str_comp(&pName[ExpectedSuffixOffset], JOJOSuffix) == 0)
+		{
+			PreloadedMapEventType = EventType::JoJo;
 		}
 	}
 }
@@ -94,10 +112,18 @@ void EventsDirector::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pOutp
 const char *EventsDirector::GetEventMapName(const char *pMapName)
 {
 	bool CurrentEventWinter = str_comp(g_Config.m_InfEvent, "winter") == 0;
+	bool CurrentEventJoJo = str_comp(g_Config.m_InfEvent, "jojo") == 0;
+	
 	if(CurrentEventWinter)
 	{
 		static char MapName[128];
 		str_format(MapName, sizeof(MapName), "%s%s", pMapName, WinterSuffix);
+		return MapName;
+	}
+	else if(CurrentEventJoJo)
+	{
+		static char MapName[128];
+		str_format(MapName, sizeof(MapName), "%s%s", pMapName, JOJOSuffix);
 		return MapName;
 	}
 
@@ -107,4 +133,9 @@ const char *EventsDirector::GetEventMapName(const char *pMapName)
 bool EventsDirector::IsWinter()
 {
 	return PreloadedMapEventType == EventType::Winter;
+}
+
+bool EventsDirector::IsJOJO()
+{
+	return PreloadedMapEventType == EventType::JoJo;
 }

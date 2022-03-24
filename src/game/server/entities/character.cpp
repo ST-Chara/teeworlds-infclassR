@@ -1071,6 +1071,8 @@ int CCharacter::GetInfWeaponID(int WID) const
 				return INFWEAPON_HERO_GRENADE;
 			case PLAYERCLASS_LOOPER:
 				return INFWEAPON_LOOPER_GRENADE;
+			case PLAYERCLASS_VALENTINE:
+				return INFWEAPON_D4C_GRENADE;
 			default:
 				return INFWEAPON_GRENADE;
 		}
@@ -1097,6 +1099,8 @@ int CCharacter::GetInfWeaponID(int WID) const
 				return INFWEAPON_MEDIC_LASER;
 			case PLAYERCLASS_MERCENARY:
 				return INFWEAPON_MERCENARY_LASER;
+			case PLAYERCLASS_VALENTINE:
+				return INFWEAPON_D4C_LASER;
 			default:
 				return INFWEAPON_LASER;
 		}

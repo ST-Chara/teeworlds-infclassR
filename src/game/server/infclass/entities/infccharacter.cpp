@@ -1792,6 +1792,11 @@ void CInfClassCharacter::OnShotgunFired(WeaponFireContext *pFireContext)
 		Force = 10.0f;
 		DamageType = DAMAGE_TYPE::MEDIC_SHOTGUN;
 	}
+	else if(GetPlayerClass() == PLAYERCLASS_VALENTINE)
+	{
+		GenerateFPos(GetCID());
+		return;
+	}
 
 	for(int i = -ShotSpread; i <= ShotSpread; ++i)
 	{
@@ -1928,6 +1933,11 @@ void CInfClassCharacter::OnLaserFired(WeaponFireContext *pFireContext)
 		Damage = 5;
 		new CInfClassLaser(GameServer(), GetPos(), Direction, GameServer()->Tuning()->m_LaserReach*0.7f, GetCID(), Damage, DAMAGE_TYPE::LOOPER_LASER);
 		GameServer()->CreateSound(GetPos(), SOUND_LASER_FIRE);
+	}
+	else if (GetPlayerClass() == PLAYERCLASS_VALENTINE) 
+	{
+		new CGrowingExplosion(GameServer(), GetPos(), Direction, GetCID(), 4, DAMAGE_TYPE::D4C);
+		GameServer()->CreateSound(GetPos(), SOUND_HOOK_LOOP);
 	}
 	else if(GetPlayerClass() == PLAYERCLASS_MERCENARY)
 	{
@@ -2726,6 +2736,11 @@ void CInfClassCharacter::GiveGift(int GiftType)
 			GiveWeapon(WEAPON_LASER, -1);
 			GiveWeapon(WEAPON_GRENADE, -1);
 			break;
+		case PLAYERCLASS_VALENTINE:
+			GiveWeapon(WEAPON_SHOTGUN, -1);
+			GiveWeapon(WEAPON_LASER, -1);
+			GiveWeapon(WEAPON_GRENADE, -1);
+			break;
 		case PLAYERCLASS_MEDIC:
 			GiveWeapon(WEAPON_GUN, -1);
 			GiveWeapon(WEAPON_SHOTGUN, -1);
@@ -3056,4 +3071,36 @@ void CInfClassCharacter::TeleToId(int TeleNumber, int TeleType)
 	m_Core.m_HookState = HOOK_RETRACTED;
 	m_Core.m_TriggeredEvents |= COREEVENT_HOOK_RETRACT;
 	m_Core.m_HookPos = m_Core.m_Pos;
+}
+
+void CInfClassCharacter::TeleportPlayer(vec2 Pos)
+{
+	m_Core.m_Pos = Pos;
+	m_Core.m_HookedPlayer = -1;
+	m_Core.m_HookState = HOOK_RETRACT_END;
+	m_Core.m_HookPos = m_Core.m_Pos;
+}
+
+void CInfClassCharacter::GenerateFPos(int ClientID)
+{
+	vec2 randPos((rand() % (GameServer()->Collision()->GetWidth()*32 + 16)),(rand() % (GameServer()->Collision()->GetHeight()*32 + 16)));
+	while(GameServer()->Collision()->CheckPoint(randPos))
+		randPos = vec2((rand() % (GameServer()->Collision()->GetWidth()*32 + 16)),(rand() % (GameServer()->Collision()->GetHeight()*32 + 16)));
+	if(GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_icDamage, randPos) == ZONE_DAMAGE_INFECTION || 
+	   GameServer()->Collision()->CheckPhysicsFlag(randPos, CCollision::COLFLAG_SOLID) ||
+	   GameServer()->Collision()->CheckPhysicsFlag(randPos, CCollision::COLFLAG_NOHOOK) || 
+	   GameServer()->Collision()->CheckPhysicsFlag(randPos, CCollision::COLFLAG_WATER) ||
+	   GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_icDamage, randPos) == ZONE_DAMAGE_DEATH ||
+	   GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_icDamage, randPos) == ZONE_DAMAGE_DEATH_NOUNDEAD ||
+	   GameServer()->Collision()->GetZoneValueAt(GameServer()->m_ZoneHandle_icDamage, randPos) == ZONE_DAMAGE_DEATH_INFECTED ||
+	   randPos.y >= (GameServer()->Collision()->GetHeight()/2/2))
+	{
+		GenerateFPos(ClientID);
+		return;
+	}
+
+	m_D4CToPos = randPos;
+	TeleportPlayer(m_D4CToPos);
+
+	new CGrowingExplosion(GameServer(), m_D4CToPos, vec2(0, 0), -1, 4, DAMAGE_TYPE::D4C);
 }

@@ -33,17 +33,19 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 		case DAMAGE_TYPE::MERCENARY_GRENADE:
 			m_ExplosionEffect = GROWING_EXPLOSION_EFFECT::POISON_INFECTED;
 			break;
+		case DAMAGE_TYPE::WHITE_HOLE:
 		case DAMAGE_TYPE::MERCENARY_BOMB:
-			m_ExplosionEffect = GROWING_EXPLOSION_EFFECT::BOOM_INFECTED;
-			break;
 		case DAMAGE_TYPE::SCIENTIST_LASER:
 			m_ExplosionEffect = GROWING_EXPLOSION_EFFECT::BOOM_INFECTED;
 			break;
 		case DAMAGE_TYPE::SCIENTIST_MINE:
 			m_ExplosionEffect = GROWING_EXPLOSION_EFFECT::ELECTRIC_INFECTED;
 			break;
-		case DAMAGE_TYPE::WHITE_HOLE:
-			m_ExplosionEffect = GROWING_EXPLOSION_EFFECT::BOOM_INFECTED;
+		case DAMAGE_TYPE::D4C:
+			m_ExplosionEffect = GROWING_EXPLOSION_EFFECT::D4C_TP;
+			break;
+		case DAMAGE_TYPE::D4C_SELF:
+			m_ExplosionEffect = GROWING_EXPLOSION_EFFECT::D4C_TP_SELF;
 			break;
 		default:
 			break;
@@ -206,6 +208,20 @@ void CGrowingExplosion::Tick()
 							GameController()->CreateExplosion(TileCenter, m_Owner, m_DamageType, DamageFactor);
 						}
 						break;
+					case GROWING_EXPLOSION_EFFECT::D4C_TP:
+						if (random_prob(1.0f))
+						{
+							GameServer()->CreatePlayerSpawn(TileCenter);
+							GameServer()->CreateDeath(TileCenter, GetOwner());
+						}
+						break;
+					case GROWING_EXPLOSION_EFFECT::D4C_TP_SELF:
+						if (random_prob(1.0f))
+						{
+							GameServer()->CreatePlayerSpawn(TileCenter);
+							GameServer()->CreateDeath(TileCenter, GetOwner());
+						}
+						break;
 					case GROWING_EXPLOSION_EFFECT::ELECTRIC_INFECTED:
 					{
 						vec2 EndPoint = m_SeedPos + vec2(32.0f*(i-m_MaxGrowing) - 16.0f + random_float()*32.0f, 32.0f*(j-m_MaxGrowing) - 16.0f + random_float()*32.0f);
@@ -342,6 +358,20 @@ void CGrowingExplosion::Tick()
 				{
 					p->LoveEffect(5);
 					GameServer()->SendEmoticon(p->GetCID(), EMOTICON_HEARTS);
+					m_Hit[p->GetCID()] = true;
+					break;
+				}
+				case GROWING_EXPLOSION_EFFECT::D4C_TP:
+				{
+					p->GenerateFPos(p->GetCID());
+					GameServer()->SendEmoticon(p->GetCID(), EMOTICON_EXCLAMATION);
+					m_Hit[p->GetCID()] = true;
+					break;
+				}
+				case GROWING_EXPLOSION_EFFECT::D4C_TP_SELF:
+				{
+					p->GenerateFPos(p->GetCID());
+					GameServer()->SendEmoticon(p->GetCID(), EMOTICON_EXCLAMATION);
 					m_Hit[p->GetCID()] = true;
 					break;
 				}

@@ -484,6 +484,7 @@ bool CInfClassGameController::IsSupportClass(int PlayerClass)
 		case PLAYERCLASS_NINJA:
 		case PLAYERCLASS_MERCENARY:
 		case PLAYERCLASS_SNIPER:
+		case PLAYERCLASS_VALENTINE:
 			return true;
 		default:
 			return false;
@@ -568,6 +569,8 @@ const char *CInfClassGameController::GetClassName(int PlayerClass)
 			return "biologist";
 		case PLAYERCLASS_LOOPER:
 			return "looper";
+		case PLAYERCLASS_VALENTINE:
+			return "valentine";
 
 		case PLAYERCLASS_SMOKER:
 			return "smoker";
@@ -621,6 +624,8 @@ const char *CInfClassGameController::GetClassPluralName(int PlayerClass)
 			return "biologists";
 		case PLAYERCLASS_LOOPER:
 			return "loopers";
+		case PLAYERCLASS_VALENTINE:
+			return "valentines";
 
 		case PLAYERCLASS_SMOKER:
 			return "smokers";
@@ -674,6 +679,9 @@ const char *CInfClassGameController::GetClassDisplayName(int PlayerClass, const 
 			return _("Biologist");
 		case PLAYERCLASS_LOOPER:
 			return _("Looper");
+		case PLAYERCLASS_VALENTINE:
+			return _("Valentine");
+		
 
 		case PLAYERCLASS_SMOKER:
 			return _("Smoker");
@@ -737,6 +745,8 @@ const char *CInfClassGameController::GetClassPluralDisplayName(int PlayerClass)
 			return _("Biologists");
 		case PLAYERCLASS_LOOPER:
 			return _("Loopers");
+		case PLAYERCLASS_VALENTINE:
+			return _("Valentines");
 
 		case PLAYERCLASS_SMOKER:
 			return _("Smokers");
@@ -803,6 +813,9 @@ int CInfClassGameController::MenuClassToPlayerClass(int MenuClass)
 			break;
 		case CMapConverter::MENUCLASS_LOOPER:
 			PlayerClass = PLAYERCLASS_LOOPER;
+			break;
+		case CMapConverter::MENUCLASS_VALENTINE:
+			PlayerClass = PLAYERCLASS_VALENTINE;
 			break;
 	}
 
@@ -2098,6 +2111,7 @@ void CInfClassGameController::SnapMapMenu(int SnappingClient, CNetObj_GameInfo *
 				case PLAYERCLASS_HERO:
 					Hero++;
 					break;
+				case PLAYERCLASS_VALENTINE:
 				case PLAYERCLASS_LOOPER:
 					Defender++;
 					break;
